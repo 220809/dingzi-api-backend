@@ -1,0 +1,34 @@
+spring:
+  application:
+   name: ding-api-bd
+  profiles:
+    active: dev
+  session:
+    timeout: 3600
+server:
+  port: 9090
+  servlet:
+    context-path: /api
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+    version: openapi_3_0
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.dingzk.dingapi.controller
+
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
