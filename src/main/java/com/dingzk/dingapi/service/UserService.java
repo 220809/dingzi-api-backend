@@ -1,10 +1,13 @@
 package com.dingzk.dingapi.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingzk.dingapi.model.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.List;
 
 /**
 * @author ding
@@ -56,4 +59,13 @@ public interface UserService extends IService<User> {
         HttpSession session = attr.getRequest().getSession();
         return (User) session.getAttribute("login_user");
     }
+
+    /**
+     * 条件查询用户
+     * @param userDo 查询条件Do
+     * @return 用户列表
+     */
+    List<User> listUsers(User userDo);
+
+    Page<User> pageListUsers(User userDo, long pageNum, long pageSize);
 }

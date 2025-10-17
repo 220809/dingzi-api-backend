@@ -15,10 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 全局请求响应日志
@@ -64,16 +61,21 @@ public class LogInterceptor {
             for (Field field : arg.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 // 跳过 serialVersionUID
-                if (Objects.equals("serialVersionUID", field.getName())) {
+                String fieldName = field.getName();
+                if (Objects.equals("serialVersionUID", fieldName)) {
+                    continue;
+                }
+                Object value = field.get(arg);
+                // 跳过空参数
+                if (value == null) {
                     continue;
                 }
                 if (field.isAnnotationPresent(Sensitive.class)) {
-                    String value = ((String) field.get(arg));
                     Sensitive annotation = field.getAnnotation(Sensitive.class);
-                    reqParams.add(String.format("%s: %s", field.getName(), SensitiveUtils.desensitize(value, annotation.type())));
+                    reqParams.add(String.format("%s: '%s'", fieldName, SensitiveUtils.desensitize((String) value, annotation.type())));
                     continue;
                 }
-                reqParams.add(String.format("%s: %s", field.getName(), field.get(arg)));
+                reqParams.add(String.format("%s: '%s'", fieldName, value));
             }
         }
         return StringUtils.join(reqParams, ", ");

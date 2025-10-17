@@ -19,7 +19,7 @@ public interface UserMapper extends BaseMapper<User> {
             queryWrapper.eq("id", userDo.getId());
         }
         if (StringUtils.isNotBlank(userDo.getUsername())) {
-             queryWrapper.eq("username", userDo.getUsername());
+             queryWrapper.like("username", userDo.getUsername());
         }
         if (StringUtils.isNotBlank(userDo.getUserAccount())) {
              queryWrapper.eq("user_account", userDo.getUserAccount());

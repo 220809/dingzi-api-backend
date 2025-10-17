@@ -6,13 +6,11 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserUpdateRequest extends UserRequest {
+public class UserUpdateRequest implements UserRequest {
     @Serial
     private static final long serialVersionUID = 3913931453421876899L;
     /**

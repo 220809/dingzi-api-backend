@@ -6,20 +6,19 @@ import com.dingzk.dingapi.exception.BusinessException;
 import com.dingzk.dingapi.model.entity.User;
 import com.dingzk.dingapi.service.UserService;
 import jakarta.annotation.Resource;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-@Aspect
 @Component
-public class AuthInterceptor {
+public class AuthInterceptor implements HandlerInterceptor {
 
     @Resource
     private UserService userService;
 
-    @Around("@annotation(authority)")
-    public Object authIntercept(ProceedingJoinPoint joinPoint, Authority authority) throws Throwable {
+    private void authIntercept(Authority authority) {
         User loginUser = userService.getLoginUser();
         if (loginUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN);
@@ -29,6 +28,15 @@ public class AuthInterceptor {
                 throw new BusinessException(ErrorCode.NO_AUTH);
             }
         }
-        return joinPoint.proceed();
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if (handler instanceof HandlerMethod hm) {
+            if (hm.getMethod().isAnnotationPresent(Authority.class)) {
+                authIntercept(hm.getMethod().getAnnotation(Authority.class));
+            }
+        }
+        return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 }

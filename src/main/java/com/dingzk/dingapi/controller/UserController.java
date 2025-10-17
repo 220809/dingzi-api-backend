@@ -3,12 +3,11 @@ package com.dingzk.dingapi.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.dingzk.dingapi.annotation.Authority;
-import com.dingzk.dingapi.common.BaseResponse;
-import com.dingzk.dingapi.common.ErrorCode;
-import com.dingzk.dingapi.common.ResUtils;
+import com.dingzk.dingapi.common.*;
 import com.dingzk.dingapi.converter.UserConverter;
 import com.dingzk.dingapi.exception.BusinessException;
 import com.dingzk.dingapi.model.dto.user.UserLoginRequest;
+import com.dingzk.dingapi.model.dto.user.UserQueryRequest;
 import com.dingzk.dingapi.model.dto.user.UserRegisterRequest;
 import com.dingzk.dingapi.model.dto.user.UserUpdateRequest;
 import com.dingzk.dingapi.model.entity.User;
@@ -20,8 +19,10 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,11 +90,11 @@ public class UserController {
     })
     @Authority(role = 1)
     @GetMapping("/get")
-    public BaseResponse<UserVo> getUserById(Long id) {
-        if (id == null) {
+    public BaseResponse<UserVo> getUserById(@ParameterObject BaseRequest request) {
+        if (request == null) {
             throw new BusinessException(ErrorCode.BAD_PARAM);
         }
-        User user = userService.getById(id);
+        User user = userService.getById(request.getId());
         if (user == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND, "用户不存在");
         }
@@ -104,10 +105,11 @@ public class UserController {
     @Operation(summary = "根据id删除用户")
     @Authority(role = 1)
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteUserById(Long id) {
-        if (id == null) {
+    public BaseResponse<Boolean> deleteUserById(@ParameterObject BaseRequest request) {
+        if (request == null) {
             throw new BusinessException(ErrorCode.BAD_PARAM);
         }
+        Long id = request.getId();
         // 不允许删除当前登录用户
         if (userService.getLoginUser().getId().equals(id)) {
             throw new BusinessException(ErrorCode.NO_AUTH, "禁止删除当前登录用户");
@@ -117,27 +119,46 @@ public class UserController {
     }
 
     @Operation(summary = "查询用户")
+    @Parameters({
+            @Parameter(name = "username", description = "用户名"),
+            @Parameter(name = "userAccount", description = "用户名"),
+            @Parameter(name = "pageNum", description = "当前页数", hidden = true),
+            @Parameter(name = "pageSize", description = "每页条数", hidden = true)
+    })
     @Authority(role = 1)
     @GetMapping("/list")
-    public BaseResponse<List<UserVo>> listUsers() {
-        List<User> userList = userService.list();
+    public BaseResponse<List<UserVo>> listUsers(@ParameterObject UserQueryRequest queryRequest) {
+        User userDo = UserConverter.convertToUserDo(queryRequest);
+        List<User> userList = userService.listUsers(userDo);
+        // 数据为空直接返回
+        if (userList.isEmpty()) {
+            return ResUtils.success(Collections.emptyList());
+        }
         List<UserVo> userVos = UserConverter.convertToUserVoList(userList);
         return ResUtils.success(userVos);
     }
 
     @Operation(summary = "分页查询用户")
     @Parameters({
-            @Parameter(name = "page", description = "页数"),
+            @Parameter(name = "username", description = "用户名"),
+            @Parameter(name = "userAccount", description = "用户名"),
+            @Parameter(name = "pageNum", description = "当前页数"),
             @Parameter(name = "pageSize", description = "每页条数")
     })
     @Authority(role = 1)
     @GetMapping("/list/page")
-    public BaseResponse<Page<UserVo>> pageListUsers(int page, int pageSize) {
-        Page<User> userPage = userService.page(Page.of(page, pageSize));
+    public BaseResponse<PageVo<UserVo>> pageListUsers(@ParameterObject UserQueryRequest queryRequest) {
+        User userDo = UserConverter.convertToUserDo(queryRequest);
+        Page<User> userPage = userService.pageListUsers(userDo, queryRequest.getPageNum(), queryRequest.getPageSize());
+        // 转换 pageVo
         Page<UserVo> userVoPage = new PageDTO<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
+        // 数据为空直接返回
+        if (userPage.getRecords().isEmpty()) {
+            return ResUtils.success(PageVo.fromPage(userVoPage));
+        }
         List<UserVo> userVos = UserConverter.convertToUserVoList(userPage.getRecords());
         userVoPage.setRecords(userVos);
-        return ResUtils.success(userVoPage);
+        return ResUtils.success(PageVo.fromPage(userVoPage));
     }
 
     @Operation(summary = "修改用户")

@@ -5,13 +5,11 @@ import com.dingzk.dingapi.enums.SensitiveType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserLoginRequest extends UserRequest {
+public class UserLoginRequest implements UserRequest {
     @Serial
     private static final long serialVersionUID = 7921446629762109897L;
     /**

@@ -1,6 +1,7 @@
 package com.dingzk.dingapi.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingzk.dingapi.common.ErrorCode;
 import com.dingzk.dingapi.exception.BusinessException;
@@ -11,6 +12,8 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.util.List;
 
 /**
 * @author ding
@@ -75,5 +78,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.NOT_FOUND, "用户不存在");
         }
         return true;
+    }
+
+    @Override
+    public List<User> listUsers(User userDo) {
+        QueryWrapper<User> queryWrapper = userMapper.buildQueryWrapper(userDo);
+        List<User> userList = userMapper.selectList(queryWrapper);
+        return userList;
+    }
+
+    @Override
+    public Page<User> pageListUsers(User userDo, long pageNum, long pageSize) {
+        QueryWrapper<User> queryWrapper = userMapper.buildQueryWrapper(userDo);
+        Page<User> userPage = userMapper.selectPage(Page.of(pageNum, pageSize), queryWrapper);
+        return userPage;
     }
 }
