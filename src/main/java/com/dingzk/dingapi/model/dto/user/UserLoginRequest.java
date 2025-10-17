@@ -1,5 +1,7 @@
 package com.dingzk.dingapi.model.dto.user;
 
+import com.dingzk.dingapi.annotation.Sensitive;
+import com.dingzk.dingapi.enums.SensitiveType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -23,5 +25,6 @@ public class UserLoginRequest extends UserRequest {
      */
     @NotBlank(message = "密码不能为空")
     @Pattern(regexp = "^[A-Za-z0-9]{8,16}$", message = "密码应为8-16位中文、英文或数字的组合")
+    @Sensitive(type = SensitiveType.PASSWORD)
     private String password;
 }

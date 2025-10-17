@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @Operation(summary = "获取登录用户")
-    @PostMapping("/current")
+    @GetMapping("/current")
     public BaseResponse<UserVo> getLoginUser() {
         User loginUser = userService.getLoginUser();
         if (loginUser == null) {
