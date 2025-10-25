@@ -10,6 +10,7 @@
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="url" column="url" jdbcType="VARCHAR"/>
             <result property="method" column="method" jdbcType="VARCHAR"/>
+            <result property="reqParams" column="req_params" jdbcType="VARCHAR"/>
             <result property="creatorId" column="creator_id" jdbcType="BIGINT"/>
             <result property="reqHeader" column="req_header" jdbcType="VARCHAR"/>
             <result property="respHeader" column="resp_header" jdbcType="VARCHAR"/>
@@ -21,7 +22,7 @@
 
     <sql id="Base_Column_List">
         id,name,description,
-        url,method,creator_id,
+        url,method,req_params,creator_id,
         req_header,resp_header,status,
         create_time,update_time,deleted
     </sql>

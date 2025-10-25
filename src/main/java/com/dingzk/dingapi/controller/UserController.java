@@ -21,6 +21,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
+import com.dingzk.dinginterfacesdk.client.TestClient;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
-@Tag(name = "用户管理")
+@Tag(name = "User", description = "用户管理")
 public class UserController {
 
     @Resource
@@ -62,23 +63,18 @@ public class UserController {
     }
 
     @Operation(summary = "获取登录用户")
+    @Authority
     @GetMapping("/current")
     public BaseResponse<UserVo> getLoginUser() {
         User loginUser = userService.getLoginUser();
-        if (loginUser == null) {
-            throw new BusinessException(ErrorCode.NOT_LOGIN);
-        }
         UserVo userVo = UserConverter.convertToUserVo(loginUser);
         return ResUtils.success(userVo);
     }
 
     @Operation(summary = "退出登录")
+    @Authority
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout() {
-        User loginUser = userService.getLoginUser();
-        if (loginUser == null) {
-            throw new BusinessException(ErrorCode.NOT_LOGIN);
-        }
         userService.saveUserLoginState(null);
         return ResUtils.success(true);
     }
@@ -174,4 +170,22 @@ public class UserController {
     }
 
     // endregion
+
+    @Operation(summary = "重新生成apiKeys")
+    @Authority
+    @PostMapping("/apiKeys/regen")
+    public BaseResponse<Boolean> regenUserApiKeys() {
+        User loginUser = userService.getLoginUser();
+        boolean result = userService.regenUserApiKeys(loginUser);
+        return ResUtils.success(result);
+    }
+
+
+    @Resource
+    private TestClient testClient;
+    @PostMapping("/testApi")
+    public BaseResponse<String> testApi() {
+        String result = testClient.getRandomInteger(1000);
+        return ResUtils.success(result);
+    }
 }

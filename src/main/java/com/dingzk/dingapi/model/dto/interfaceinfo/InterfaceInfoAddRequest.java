@@ -40,6 +40,11 @@ public class InterfaceInfoAddRequest implements InterfaceInfoRequest {
     private String method;
 
     /**
+     * 请求参数
+     */
+    private String reqParams;
+
+    /**
      * 请求头
      */
     private String reqHeader;

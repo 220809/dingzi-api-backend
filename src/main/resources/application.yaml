@@ -32,3 +32,7 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+
+ding-api:
+  access-key: xxx
+  secret-key: xxx

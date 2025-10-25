@@ -34,6 +34,16 @@ public class User {
     private String password;
 
     /**
+     * accessKey
+     */
+    private String accessKey;
+
+    /**
+     * secretKey
+     */
+    private String secretKey;
+
+    /**
      * 用户头像
      */
     private String userAvatar;

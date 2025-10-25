@@ -1,5 +1,6 @@
 package com.dingzk.dingapi.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -44,14 +45,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         newUser.setUsername(userAccount);
         newUser.setUserAccount(userAccount);
         // 加密
-        newUser.setPassword(encryptPassword(password));
+        newUser.setPassword(encryptContent(password));
+        // 注册时自动分配一对ak, sk
+        String accessKey = encryptContent(userAccount);
+        String secretKey = encryptContent(userAccount + PWD_SALT);
+        newUser.setAccessKey(accessKey);
+        newUser.setSecretKey(secretKey);
         userMapper.insert(newUser);
         return newUser.getId();
     }
 
     @Override
     public long userLogin(User userDo) {
-        userDo.setPassword(encryptPassword(userDo.getPassword()));
+        userDo.setPassword(encryptContent(userDo.getPassword()));
         QueryWrapper<User> queryWrapper = userMapper.buildQueryWrapper(userDo);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
@@ -61,8 +67,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return user.getId();
     }
 
-    private String encryptPassword(String password) {
-        return DigestUtils.md5DigestAsHex((password + PWD_SALT).getBytes());
+    private String encryptContent(String content) {
+        return DigestUtils.md5DigestAsHex((content + PWD_SALT).getBytes());
     }
 
     @Override
@@ -71,7 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.BAD_PARAM);
         }
         if (StringUtils.isNotBlank(user.getPassword())) {
-            user.setPassword(encryptPassword(user.getPassword()));
+            user.setPassword(encryptContent(user.getPassword()));
         }
         int result = userMapper.updateById(user);
         if (result <= 0) {
@@ -92,5 +98,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         QueryWrapper<User> queryWrapper = userMapper.buildQueryWrapper(userDo);
         Page<User> userPage = userMapper.selectPage(Page.of(pageNum, pageSize), queryWrapper);
         return userPage;
+    }
+
+    @Override
+    public boolean regenUserApiKeys(User loginUser) {
+        if (loginUser == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
+        String accessKey = encryptContent(loginUser.getUserAccount() + RandomUtil.randomNumbers(5));
+        String secretKey = encryptContent(loginUser.getUserAccount() + RandomUtil.randomNumbers(8));
+        loginUser.setAccessKey(accessKey);
+        loginUser.setSecretKey(secretKey);
+        int infectedRows = userMapper.updateById(loginUser);
+        if (infectedRows != 1) {
+            // 有没有可能出现 > 1 的情况?
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+        return true;
     }
 }

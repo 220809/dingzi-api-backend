@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/interfaceInfo")
-@Tag(name = "接口管理")
+@Tag(name = "InterfaceInfo", description = "接口管理")
 public class InterfaceInfoController {
 
     @Resource
@@ -41,15 +41,18 @@ public class InterfaceInfoController {
     @Resource
     private UserService userService;
 
-    @Operation(summary = "添加接口")
+    @Operation(summary = "发布接口")
     @Authority(role = 1)
     @PostMapping("/add")
-    public BaseResponse<Long> interfaceInfoRegister(@RequestBody @Valid InterfaceInfoAddRequest addRequest) {
+    public BaseResponse<Long> publishInterfaceInfo(@RequestBody @Valid InterfaceInfoAddRequest addRequest) {
         if (addRequest == null) {
             throw new BusinessException(ErrorCode.BAD_PARAM, "请求参数为空");
         }
 
         InterfaceInfo interfaceInfoDo = InterfaceInfoConverter.convertToInterfaceInfoDo(addRequest);
+        // 添加创建人信息
+        User loginUser = userService.getLoginUser();
+        interfaceInfoDo.setCreatorId(loginUser.getId());
         boolean result = interfaceInfoService.save(interfaceInfoDo);
         if (!result) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
@@ -173,6 +176,9 @@ public class InterfaceInfoController {
         }
         InterfaceInfo interfaceInfoDo = InterfaceInfoConverter.convertToInterfaceInfoDo(updateRequest);
         boolean result = interfaceInfoService.updateById(interfaceInfoDo);
+        if (!result) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
         return ResUtils.success(result);
     }
 }

@@ -67,5 +67,19 @@ public interface UserService extends IService<User> {
      */
     List<User> listUsers(User userDo);
 
+    /**
+     * 分页查询用户
+     * @param userDo 查询条件Do
+     * @param pageNum 当前页数
+     * @param pageSize 页面大小
+     * @return 列表
+     */
     Page<User> pageListUsers(User userDo, long pageNum, long pageSize);
+
+    /**
+     * 重新生成用户 apiKeys
+     * @param loginUser 当前登录用户
+     * @return 结果
+     */
+    boolean regenUserApiKeys(User loginUser);
 }

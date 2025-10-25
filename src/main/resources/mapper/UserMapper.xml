@@ -9,6 +9,8 @@
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="accessKey" column="access_key" jdbcType="VARCHAR"/>
+            <result property="secretKey" column="secret_key" jdbcType="VARCHAR"/>
             <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
             <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="userRole" column="user_role" jdbcType="TINYINT"/>
@@ -19,7 +21,7 @@
 
     <sql id="Base_Column_List">
         id,username,user_account,
-        password,user_avatar,gender,
+        password,access_key,secret_key,user_avatar,gender,
         user_role,create_time,update_time,
         deleted
     </sql>
