@@ -2,7 +2,7 @@ package com.dingzk.dingapi.converter;
 
 import com.dingzk.dingapi.model.dto.interfaceinfo.InterfaceInfoRequest;
 import com.dingzk.dingapi.model.entity.InterfaceInfo;
-import com.dingzk.dingapi.model.entity.User;
+import com.dingzk.dingapicommon.entity.User;
 import com.dingzk.dingapi.model.vo.InterfaceInfoVo;
 import com.dingzk.dingapi.model.vo.UserVo;
 import org.springframework.beans.BeanUtils;

@@ -10,9 +10,9 @@ import com.dingzk.dingapi.model.dto.user.UserLoginRequest;
 import com.dingzk.dingapi.model.dto.user.UserQueryRequest;
 import com.dingzk.dingapi.model.dto.user.UserRegisterRequest;
 import com.dingzk.dingapi.model.dto.user.UserUpdateRequest;
-import com.dingzk.dingapi.model.entity.User;
 import com.dingzk.dingapi.model.vo.UserVo;
 import com.dingzk.dingapi.service.UserService;
+import com.dingzk.dingapicommon.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -21,7 +21,6 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
-import com.dingzk.dinginterfacesdk.client.TestClient;
 
 import java.util.Collections;
 import java.util.List;
@@ -177,15 +176,6 @@ public class UserController {
     public BaseResponse<Boolean> regenUserApiKeys() {
         User loginUser = userService.getLoginUser();
         boolean result = userService.regenUserApiKeys(loginUser);
-        return ResUtils.success(result);
-    }
-
-
-    @Resource
-    private TestClient testClient;
-    @PostMapping("/testApi")
-    public BaseResponse<String> testApi() {
-        String result = testClient.getRandomInteger(1000);
         return ResUtils.success(result);
     }
 }

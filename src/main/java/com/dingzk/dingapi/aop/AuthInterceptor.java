@@ -3,7 +3,7 @@ package com.dingzk.dingapi.aop;
 import com.dingzk.dingapi.annotation.Authority;
 import com.dingzk.dingapi.common.ErrorCode;
 import com.dingzk.dingapi.exception.BusinessException;
-import com.dingzk.dingapi.model.entity.User;
+import com.dingzk.dingapicommon.entity.User;
 import com.dingzk.dingapi.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingzk.dingapi.common.ErrorCode;
 import com.dingzk.dingapi.exception.BusinessException;
 import com.dingzk.dingapi.mapper.UserMapper;
-import com.dingzk.dingapi.model.entity.User;
+import com.dingzk.dingapicommon.entity.User;
 import com.dingzk.dingapi.service.UserService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
 package com.dingzk.dingapi.converter;
 
 import com.dingzk.dingapi.model.dto.user.UserRequest;
-import com.dingzk.dingapi.model.entity.User;
+import com.dingzk.dingapicommon.entity.User;
 import com.dingzk.dingapi.model.vo.UserVo;
 import org.springframework.beans.BeanUtils;
 

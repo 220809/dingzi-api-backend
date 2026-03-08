@@ -33,6 +33,20 @@ knife4j:
   setting:
     language: zh_cn
 
+dubbo:
+  registry:
+    address: nacos-address
+    # This will enable application-level service discovery only (the recommended service discovery method for Dubbo3).
+    # For users upgrading from Dubbo2.x, please set the value to 'all' for smooth migration.
+    register-mode: instance
+  protocol:
+    name: tri
+    port: 50051
+  application:
+    name: Dubbo-dingapi-bd-Application
+    logger: slf4j
+
+# for test
 ding-api:
-  access-key: xxx
-  secret-key: xxx
+  access-key: 870f8b8c4d0d47c4133f293b17989abd
+  secret-key: 123

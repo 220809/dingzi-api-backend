@@ -10,7 +10,7 @@ import com.dingzk.dingapi.model.dto.interfaceinfo.InterfaceInfoAddRequest;
 import com.dingzk.dingapi.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.dingzk.dingapi.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.dingzk.dingapi.model.entity.InterfaceInfo;
-import com.dingzk.dingapi.model.entity.User;
+import com.dingzk.dingapicommon.entity.User;
 import com.dingzk.dingapi.model.vo.InterfaceInfoVo;
 import com.dingzk.dingapi.service.InterfaceInfoService;
 import com.dingzk.dingapi.service.UserService;

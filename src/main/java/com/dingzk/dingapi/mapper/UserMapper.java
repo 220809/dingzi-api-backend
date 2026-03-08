@@ -2,14 +2,14 @@ package com.dingzk.dingapi.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dingzk.dingapi.model.entity.User;
+import com.dingzk.dingapicommon.entity.User;
 import org.apache.commons.lang3.StringUtils;
 
 /**
 * @author ding
 * @description 针对表【user(用户)】的数据库操作Mapper
 * @createDate 2025-10-15 12:54:52
-* @Entity com.dingzk.dingapi.model.entity.User
+* @Entity com.dingzk.dingapicommon.entity.User
 */
 public interface UserMapper extends BaseMapper<User> {
 
